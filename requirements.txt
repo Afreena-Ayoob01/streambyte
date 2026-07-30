@@ -1,0 +1,10 @@
+asgiref==3.12.1
+distlib==0.4.3
+Django==6.0.7
+filelock==3.31.1
+pillow==12.3.0
+platformdirs==4.10.1
+python-discovery==1.4.4
+sqlparse==0.5.5
+tzdata==2026.3
+virtualenv==21.6.1
