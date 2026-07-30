@@ -1,0 +1,169 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Favorites | StreamByte</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav>
+
+        <a href="{% url 'home' %}" class="logo">
+            StreamByte
+        </a>
+
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'add_movie' %}">
+            Add New Movie
+        </a>
+
+        <a href="{% url 'favorites' %}">
+            ♡ My Favorites
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+
+    <!-- Main Content -->
+
+    <main>
+
+        <section class="favorites-section">
+
+            <h1>
+                My Favorites
+            </h1>
+
+            <div class="movie-grid">
+
+                {% for favorite in favorites %}
+
+                    <div class="movie-card">
+
+                        {% if favorite.movie.poster %}
+
+                            <img
+                                src="{{ favorite.movie.poster.url }}"
+                                alt="{{ favorite.movie.title }}"
+                            >
+
+                        {% endif %}
+
+
+                        <div class="movie-card-content">
+
+                            <h3>
+                                {{ favorite.movie.title }}
+                            </h3>
+
+
+                            <p class="movie-rating">
+                                ⭐ {{ favorite.movie.rating }}
+                            </p>
+
+
+                            <p>
+                                <strong>Category:</strong>
+                                {{ favorite.movie.category.name }}
+                            </p>
+
+
+                            <p>
+                                <strong>Release:</strong>
+                                {{ favorite.movie.release_date }}
+                            </p>
+
+
+                            <p class="movie-description">
+
+                                {{ favorite.movie.description|truncatewords:15 }}
+
+                            </p>
+
+
+                            <div class="movie-buttons">
+
+                                <a
+                                    href="{% url 'movie_detail' favorite.movie.id %}"
+                                >
+                                    View Details
+                                </a>
+
+
+                                <a
+                                    href="{% url 'add_favorite' favorite.movie.id %}"
+                                >
+                                    ❤️
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+                    <div class="empty-message">
+
+                        <h2>
+                            No Favorite Movies Yet
+                        </h2>
+
+                        <p>
+                            You haven't added any movies to your favorites.
+                        </p>
+
+                        <a href="{% url 'home' %}">
+                            Browse Movies
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>
+            © 2026 StreamByte. All rights reserved.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

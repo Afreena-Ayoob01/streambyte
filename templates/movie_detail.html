@@ -1,0 +1,345 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ movie.title }} | StreamByte</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         NAVIGATION BAR
+    ================================== -->
+
+    <nav>
+
+        <a href="{% url 'home' %}" class="logo">
+            StreamByte
+        </a>
+
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'add_movie' %}">
+            Add New Movie
+        </a>
+
+        <a href="{% url 'favorites' %}">
+            ♡ My Favorites
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+
+    <!-- =================================
+         MAIN CONTENT
+    ================================== -->
+
+    <main>
+
+
+        <!-- =================================
+             MOVIE DETAIL SECTION
+        ================================== -->
+
+        <div class="movie-detail-glass">
+
+
+            <!-- Movie Poster -->
+
+            <div class="detail-poster">
+
+                {% if movie.poster %}
+
+                    <img
+                        src="{{ movie.poster.url }}"
+                        alt="{{ movie.title }}"
+                    >
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Movie Information -->
+
+            <div class="detail-info">
+
+
+                <!-- Movie Title -->
+
+                <h1>
+                    {{ movie.title }}
+                </h1>
+
+
+                <!-- Rating -->
+
+                <p class="detail-rating">
+                    ☆ {{ movie.rating }}
+                </p>
+
+
+                <!-- Category -->
+
+                <p>
+                    <strong>Category:</strong>
+                    {{ movie.category.name }}
+                </p>
+
+
+                <!-- Release Date -->
+
+                <p>
+                    <strong>Release Date:</strong>
+                    {{ movie.release_date }}
+                </p>
+
+
+                <!-- Actors -->
+
+                <p>
+                    <strong>Actors:</strong>
+                    {{ movie.actors }}
+                </p>
+
+
+                <!-- Description -->
+
+                <div class="detail-description">
+
+                    <h3>
+                        About the Movie
+                    </h3>
+
+                    <p>
+                        {{ movie.description }}
+                    </p>
+
+                </div>
+
+
+                <!-- =================================
+                     MOVIE BUTTONS
+                ================================== -->
+
+                <div class="detail-buttons">
+
+
+                    <!-- Watch Trailer -->
+
+                    {% if movie.trailer_link %}
+
+                        <a
+                            href="{{ movie.trailer_link }}"
+                            target="_blank"
+                            class="trailer-button"
+                        >
+                            ▶ Watch Trailer
+                        </a>
+
+                    {% endif %}
+
+
+                    <!-- Add to Favorites -->
+
+                    <a
+                        href="{% url 'add_favorite' movie.id %}"
+                        class="favorite-button"
+                    >
+                        ♡ Add to Favorites
+                    </a>
+
+
+                </div>
+
+
+                <!-- Back to Home -->
+
+                <a
+                    href="{% url 'home' %}"
+                    class="back-button"
+                >
+                    ← Back to Movies
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             COMMENTS & REVIEWS
+             OUTSIDE MOVIE DETAIL GLASS
+        ================================== -->
+
+        <div class="comments-section">
+
+
+            <!-- Comments Heading -->
+
+            <h2>
+                Comments & Reviews
+            </h2>
+
+
+            <!-- =================================
+                 ADD COMMENT
+            ================================== -->
+
+            <div class="comment-form-box">
+
+                <h3>
+                    Share your thoughts
+                </h3>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+
+                    <button type="submit">
+                        Post Comment
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================
+                 EXISTING COMMENTS
+            ================================== -->
+
+            <div class="comments-list">
+
+
+                {% for comment in comments %}
+
+
+                    <div class="comment-card">
+
+
+                        <!-- Username -->
+
+                        <h4>
+                            {{ comment.user.username }}
+                        </h4>
+
+
+                        <!-- Date -->
+
+                        <small>
+                            {{ comment.created_at|date:"F d, Y - h:i A" }}
+                        </small>
+
+
+                        <!-- Comment Text -->
+
+                        <p>
+                            {{ comment.text }}
+                        </p>
+
+
+                        <!-- =================================
+                             EDIT & DELETE
+                             ONLY FOR COMMENT OWNER
+                        ================================== -->
+
+                        {% if comment.user == request.user %}
+
+
+                            <div class="comment-actions">
+
+
+                                <!-- Edit -->
+
+                                <a
+                                    href="{% url 'edit_comment' comment.id %}"
+                                >
+                                    ✏️ Edit
+                                </a>
+
+
+                                <!-- Delete -->
+
+                                <a
+                                    href="{% url 'delete_comment' comment.id %}"
+                                >
+                                    🗑️ Delete
+                                </a>
+
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                {% empty %}
+
+
+                    <!-- No Comments -->
+
+                    <p class="no-comments">
+
+                        No comments yet.
+                        Be the first to share your thoughts!
+
+                    </p>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =================================
+         FOOTER
+    ================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 StreamByte. All rights reserved.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

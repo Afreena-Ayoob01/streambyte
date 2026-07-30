@@ -1,0 +1,409 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>StreamByte</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+</head>
+
+
+<body>
+
+    <!-- =========================
+         NAVIGATION BAR
+    ========================== -->
+
+    <nav>
+
+        <a href="{% url 'home' %}" class="logo">
+            StreamByte
+        </a>
+
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'add_movie' %}">
+            Add New Movie
+        </a>
+
+        <a href="{% url 'favorites' %}">
+            ♡ My Favorites
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main>
+
+<!-- =========================
+     FEATURED MOVIE
+========================== -->
+
+{% if featured_movie %}
+
+<section class="featured-movie">
+
+    <div class="featured-content">
+
+        <div class="featured-info">
+
+            <span class="featured-label">
+                FEATURED MOVIE
+            </span>
+
+            <h1>
+                {{ featured_movie.title }}
+            </h1>
+
+            <div class="featured-meta">
+
+                <span>
+                    ⭐ {{ featured_movie.rating }}
+                </span>
+
+                <span>
+                    {{ featured_movie.category.name }}
+                </span>
+
+                <span>
+                    {{ featured_movie.release_date|date:"Y" }}
+                </span>
+
+            </div>
+
+            <p>
+                {{ featured_movie.description|truncatewords:35 }}
+            </p>
+
+            <div class="featured-buttons">
+
+                {% if featured_movie.trailer_link %}
+
+                    <a
+                        href="{{ featured_movie.trailer_link }}"
+                        target="_blank"
+                        class="featured-trailer"
+                    >
+                        ▶ Watch Trailer
+                    </a>
+
+                {% endif %}
+
+                <a
+                    href="{% url 'movie_detail' featured_movie.id %}"
+                    class="featured-details"
+                >
+                    View Details
+                </a>
+
+            </div>
+
+        </div>
+
+
+        {% if featured_movie.poster %}
+
+        <div class="featured-poster">
+
+            <img
+                src="{{ featured_movie.poster.url }}"
+                alt="{{ featured_movie.title }}"
+            >
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endif %}
+        <!-- =========================
+             WELCOME / HERO SECTION
+        ========================== -->
+
+        <div class="hero-glass">
+
+            <h1>
+                The Ultimate Movie Experience
+            </h1>
+
+            <h3>
+                Welcome, {{ request.user.first_name }}!
+            </h3>
+
+            <p>
+                Discover, share and discuss your favourite movies.
+            </p>
+
+
+            <!-- SEARCH -->
+
+            <form method="GET"
+                  action="{% url 'home' %}"
+                  class="search-form">
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search movies..."
+                    value="{{ request.GET.q }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <!-- CATEGORY FILTER -->
+
+            <form method="GET"
+                  action="{% url 'home' %}"
+                  class="filter-form">
+
+                <label for="category">
+                    Filter by Category:
+                </label>
+
+                <select name="category"
+                        id="category">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    {% for category in categories %}
+
+                        <option value="{{ category.id }}"
+                            {% if request.GET.category == category.id|stringformat:"s" %}
+                                selected
+                            {% endif %}>
+
+                            {{ category.name }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit">
+                    Filter
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =========================
+             LATEST MOVIES CAROUSEL
+        ========================== -->
+
+        <section class="latest-movies-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Latest Movies
+                </h2>
+
+                <div class="carousel-buttons">
+
+                    <button
+                        type="button"
+                        class="carousel-btn"
+                        onclick="scrollMovies(-1)"
+                    >
+                        ‹
+                    </button>
+
+                    <button
+                        type="button"
+                        class="carousel-btn"
+                        onclick="scrollMovies(1)"
+                    >
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Movie Carousel -->
+
+            <div class="movie-carousel-wrapper">
+
+                <div
+                    class="movie-carousel"
+                    id="movieCarousel"
+                >
+
+                    {% for movie in movies %}
+
+                        <!-- Movie Card -->
+
+                        <div class="movie-card">
+
+                            {% if movie.poster %}
+
+                                <img
+                                    src="{{ movie.poster.url }}"
+                                    alt="{{ movie.title }}"
+                                >
+
+                            {% endif %}
+
+
+                            <div class="movie-card-content">
+
+                                <h3>
+                                    {{ movie.title }}
+                                </h3>
+
+
+                                <p class="movie-rating">
+                                    ⭐ {{ movie.rating }}
+                                </p>
+
+
+                                <p>
+                                    <strong>
+                                        Category:
+                                    </strong>
+
+                                    {{ movie.category.name }}
+                                </p>
+
+
+                                <p>
+                                    <strong>
+                                        Release:
+                                    </strong>
+
+                                    {{ movie.release_date }}
+                                </p>
+
+
+                                <p class="movie-description">
+
+                                    {{ movie.description|truncatewords:15 }}
+
+                                </p>
+
+
+                                <!-- Movie Buttons -->
+
+                                <div class="movie-buttons">
+
+                                    <a
+                                        href="{% url 'movie_detail' movie.id %}"
+                                    >
+                                        View Details
+                                    </a>
+
+
+                                    <a
+                                        href="{% url 'add_favorite' movie.id %}"
+                                    >
+                                        ❤️
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+                        <!-- No Movies -->
+
+                        <div class="empty-message">
+
+                            <h3>
+                                No movies available yet.
+                            </h3>
+
+                            <p>
+                                Try adding a new movie to StreamByte.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 StreamByte. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- =========================
+         CAROUSEL JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        function scrollMovies(direction) {
+
+            const carousel =
+                document.getElementById("movieCarousel");
+
+            const scrollAmount = 500;
+
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: "smooth"
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

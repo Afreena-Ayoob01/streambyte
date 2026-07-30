@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | StreamByte</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+</head>
+
+
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <!-- StreamByte Logo -->
+
+        <a href="{% url 'login' %}" class="login-logo">
+            StreamByte
+        </a>
+
+
+        <!-- Register Box -->
+
+        <div class="auth-box">
+
+            <h1>
+                Create an Account
+            </h1>
+
+            <p class="auth-subtitle">
+                Join StreamByte and discover your next favorite movie
+            </p>
+
+
+            <!-- Registration Form -->
+
+            <form method="POST" class="auth-form">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+
+                <button type="submit"
+                        class="auth-button">
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+
+            <!-- Login Link -->
+
+            <p class="auth-footer">
+
+                Already have an account?
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+            </p>
+
+
+            <!-- Back to Home -->
+
+            <a href="{% url 'home' %}"
+               class="add-movie-back">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
