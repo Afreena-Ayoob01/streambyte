@@ -74,3 +74,20 @@ streambyte/
 │
 ├── .gitignore
 └── README.md
+## Screenshots
+
+### Home Page
+
+![StreamByte Home Page](screenshots/home.jpeg)
+
+### Movie Details
+
+![StreamByte Movie Details](screenshots/movie_details.jpeg)
+
+### Favorites
+
+![StreamByte Favorites](screenshots/favorites.jpeg)
+
+### Add New Movie
+
+![StreamByte Add New Movie](screenshots/add_new_movie.jpeg)
